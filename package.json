@@ -1,18 +1,17 @@
 {
-  "name": "memberbeat-interface",
+  "name": "memberbeat-interface-backend",
   "version": "0.0.1",
   "main": "index.js",
   "scripts": {
+    "start": "NODE_ENV=production node backend/server.js",
     "dev": "NODE_ENV=development nodemon backend/server.js"
   },
-  "type": "module",
   "keywords": [],
   "author": "me@zeljko.dev",
   "license": "GPL-3.0",
   "description": "",
   "dependencies": {
     "dotenv": "^16.4.5",
-    "ethers": "^6.13.4",
     "express": "^4.21.1",
     "express-formidable": "^1.2.0",
     "mongoose": "^8.7.3",
