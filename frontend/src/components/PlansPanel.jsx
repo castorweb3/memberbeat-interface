@@ -13,7 +13,7 @@
 
 import React, { useEffect, useState } from 'react';
 import { usePlansStore } from '../store/Plans.js';
-import { useMemberbeat } from '../context/MemberbeatContext.jsx';
+import { useMemberbeat } from '../context/MemberbeatContext';
 import { BillingPlan, Period, Plan, PricingType } from 'memberbeat-sdk-js';
 import { useNavigate } from 'react-router-dom';
 

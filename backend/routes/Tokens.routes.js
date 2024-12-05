@@ -11,8 +11,8 @@
 // You should have received a copy of the GNU General Public License
 // along with this program. If not, see <https://www.gnu.org/licenses/>.
 
-import express from "express";
-import { createToken, deleteToken, getToken, getTokens, updateToken } from "../controllers/TokensController.js";
+const express = require("express");
+const { createToken, deleteToken, getToken, getTokens, updateToken } = require("../controllers/TokensController.js");
 
 const router = express.Router();
 
@@ -22,4 +22,4 @@ router.post("/", createToken);
 router.put("/:id", updateToken);
 router.delete("/:id", deleteToken);
 
-export default router;
+module.exports = router;

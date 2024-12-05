@@ -11,8 +11,8 @@
 // You should have received a copy of the GNU General Public License
 // along with this program. If not, see <https://www.gnu.org/licenses/>.
 
-import express from "express";
-import {getPlans, getPlan, createPlan, updatePlan, deletePlan, addBillingPlan, updateBillingPlan, removeBillingPlan } from "../controllers/PlansController.js";
+const express = require("express");
+const {getPlans, getPlan, createPlan, updatePlan, deletePlan, addBillingPlan, updateBillingPlan, removeBillingPlan } = require("../controllers/PlansController.js");
 
 const router = express.Router();
 
@@ -26,4 +26,4 @@ router.post('/:id/billing-plans', addBillingPlan);
 router.put('/:id/billing-plans/:billingPlanId', updateBillingPlan);
 router.delete('/:id/billing-plans/:billingPlanId', removeBillingPlan);
 
-export default router;
+module.exports = router;

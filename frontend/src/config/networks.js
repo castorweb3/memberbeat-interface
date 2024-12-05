@@ -11,6 +11,24 @@
 // You should have received a copy of the GNU General Public License
 // along with this program. If not, see <https://www.gnu.org/licenses/>.
 
-import { mainnet, arbitrum, optimism, polygon, anvil } from 'wagmi/chains';
+const mainnet = {
+    id: 1,
+    name: "Ethereum Mainnet",
+}
 
-export const networks = [mainnet, arbitrum, optimism, polygon, anvil];
+const arbitrum = {
+    id: 42161,
+    name: "Arbitrum One",
+}
+
+const sepolia = {
+    id: 11155111,
+    name: "Sepolia",
+}
+
+const arbitrumSepolia = {
+    id: 421614,
+    name: "Arbitrum Sepolia",
+}
+
+export const networks = [mainnet, arbitrum, sepolia, arbitrumSepolia];

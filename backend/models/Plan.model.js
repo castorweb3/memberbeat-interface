@@ -11,8 +11,8 @@
 // You should have received a copy of the GNU General Public License
 // along with this program. If not, see <https://www.gnu.org/licenses/>.
 
-import mongoose from "mongoose";
-import { billingPlanSchema } from "./BillingPlan.model.js";
+const mongoose = require("mongoose");
+const { billingPlanSchema } = require("./BillingPlan.model.js");
 
 const planSchema = new mongoose.Schema({
     name: {
@@ -37,4 +37,6 @@ const planSchema = new mongoose.Schema({
 
 const Plan = mongoose.model("Plan", planSchema);
 
-export default Plan;
+module.exports = Plan;
+
+exports.Plan = Plan;

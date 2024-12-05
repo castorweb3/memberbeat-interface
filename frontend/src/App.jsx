@@ -12,24 +12,6 @@
 // along with this program. If not, see <https://www.gnu.org/licenses/>.
 
 import './App.css'
-import '@rainbow-me/rainbowkit/styles.css';
-import {
-  getDefaultConfig,
-  RainbowKitProvider
-} from '@rainbow-me/rainbowkit';
-import { WagmiProvider } from 'wagmi';
-import {
-  mainnet,
-  polygon,
-  optimism,
-  arbitrum,
-  base,
-  anvil,
-} from 'wagmi/chains';
-import {
-  QueryClientProvider,
-  QueryClient,
-} from "@tanstack/react-query";
 
 import HomePage from './pages/HomePage.jsx';
 import AdminPage from './pages/AdminPage.jsx';
@@ -40,36 +22,25 @@ import { MemberbeatProvider } from './context/MemberbeatContext.jsx';
 import TokensAdminPage from './pages/TokensAdminPage.jsx';
 import PlansAdminPage from './pages/PlansAdminPage.jsx';
 import ProfilePage from './pages/ProfilePage.jsx';
-
-const config = getDefaultConfig({
-  appName: 'Memberbeat',
-  projectId: 'Memberbeat',
-  chains: [mainnet, polygon, optimism, arbitrum, base, anvil],
-  ssr: false,
-});
-
-const queryClient = new QueryClient();
+import { WalletProvider } from './context/WalletContext';
 
 const memberbeatContractAddress = import.meta.env.VITE_MEMBERBEAT_CONTRACT_ADDRESS;
+console.log("Memberbeat contract address", memberbeatContractAddress);
 
 const App = () => {      
   return (    
-    <WagmiProvider config={config}>
-      <QueryClientProvider client={queryClient}>
-        <RainbowKitProvider>
-          <MemberbeatProvider contractAddress={memberbeatContractAddress}>            
-            <Routes>
-              <Route path="/" element={<PageContainer><HomePage /></PageContainer>} />
-              <Route path="/profile" element={<PageContainer><ProfilePage /></PageContainer>} />
-              <Route path="/admin" element={<PageContainer><AdminPage /></PageContainer>} />
-              <Route path="/admin/plans" element={<PageContainer><PlansAdminPage /></PageContainer>} />
-              <Route path="/admin/tokens" element={<PageContainer><TokensAdminPage /></PageContainer>} />
-              <Route path="/admin/billing-plans/:planId" element={<PageContainer><BillingPlansAdminPage /></PageContainer>} />
-            </Routes>             
-          </MemberbeatProvider>
-        </RainbowKitProvider>
-      </QueryClientProvider>
-    </WagmiProvider>    
+    <WalletProvider>
+      <MemberbeatProvider contractAddress={memberbeatContractAddress}>            
+        <Routes>
+          <Route path="/" element={<PageContainer><HomePage /></PageContainer>} />
+          <Route path="/profile" element={<PageContainer><ProfilePage /></PageContainer>} />
+          <Route path="/admin" element={<PageContainer><AdminPage /></PageContainer>} />
+          <Route path="/admin/plans" element={<PageContainer><PlansAdminPage /></PageContainer>} />
+          <Route path="/admin/tokens" element={<PageContainer><TokensAdminPage /></PageContainer>} />
+          <Route path="/admin/billing-plans/:planId" element={<PageContainer><BillingPlansAdminPage /></PageContainer>} />
+        </Routes>             
+      </MemberbeatProvider>
+    </WalletProvider>    
   );
 };
 

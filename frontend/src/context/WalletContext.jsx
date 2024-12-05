@@ -11,16 +11,21 @@
 // You should have received a copy of the GNU General Public License
 // along with this program. If not, see <https://www.gnu.org/licenses/>.
 
-const mongoose = require("mongoose");
+import React, { createContext, useContext } from 'react';
+import useWallet from '../hooks/useWallet.js';
 
-const connectDB = async () => {
-    try {
-        const conn = await mongoose.connect(process.env.MONGO_URI);
-        console.log(`MongoDB Connected: ${conn.connection.host}`);
-    } catch (error) {
-        console.error(`Error ${error.message}`);
-        process.exit(1);
-    }
-}
+const WalletContext = createContext();
 
-module.exports = { connectDB };
+export const WalletProvider = ({ children }) => {
+    const wallet = useWallet();
+
+    return (
+        <WalletContext.Provider value={wallet}>
+            {children}
+        </WalletContext.Provider>
+    );
+};
+
+export const useWalletContext = () => {
+    return useContext(WalletContext);
+};

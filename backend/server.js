@@ -11,19 +11,19 @@
 // You should have received a copy of the GNU General Public License
 // along with this program. If not, see <https://www.gnu.org/licenses/>.
 
-import express from "express";
-import dotenv from "dotenv";
-import path from "path";
-import {connectDB} from "./config/db.js";
-import planRoutes from "./routes/Plans.routes.js";
-import tokenRoutes from "./routes/Tokens.routes.js";
+const express = require("express");
+const dotenv = require("dotenv");
+const path = require("path");
+const { connectDB } = require("./config/db.js");
+const planRoutes = require("./routes/Plans.routes.js");
+const tokenRoutes = require("./routes/Tokens.routes.js");
 
 dotenv.config();
 
 const app = express();
 const PORT = process.env.PORT || 5000; 
 
-const __dirname = path.resolve();
+const dirname = path.resolve();
 
 app.use(express.json()); 
 app.use(express.urlencoded({ extended: true }));
@@ -37,9 +37,9 @@ app.use((req, res, next) => {
 });
 
 if (process.env.NODE_ENV === "production") {
-    app.use(express.static(path.join(__dirname, "/frontend/dist")));
+    app.use(express.static(path.join(dirname, "/frontend/dist")));
     app.get("*", (req, res) => {
-        res.sendFile(path.resolve(__dirname, "frontend", "dist", "index.html"));
+        res.sendFile(path.resolve(dirname, "frontend", "dist", "index.html"));
     });
 }
 

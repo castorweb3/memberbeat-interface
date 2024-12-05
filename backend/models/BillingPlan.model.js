@@ -11,12 +11,12 @@
 // You should have received a copy of the GNU General Public License
 // along with this program. If not, see <https://www.gnu.org/licenses/>.
 
-import mongoose from "mongoose";
+const mongoose = require("mongoose");
 
-export const periodEnum = ['Day', 'Month', 'Year', 'Lifetime'];
-export const pricingTypeEnum = ['TokenPrice', 'FiatPrice'];
+const periodEnum = ['Day', 'Month', 'Year', 'Lifetime'];
+const pricingTypeEnum = ['TokenPrice', 'FiatPrice'];
 
-export const billingPlanSchema = new mongoose.Schema({
+const billingPlanSchema = new mongoose.Schema({
   period: {
     type: String,
     enum: periodEnum,
@@ -49,3 +49,13 @@ export const billingPlanSchema = new mongoose.Schema({
 }, {
   timestamps: true
 });
+
+module.exports = {
+  periodEnum,
+  pricingTypeEnum,
+  billingPlanSchema,
+}
+
+exports.periodEnum = periodEnum;
+exports.pricingTypeEnum = pricingTypeEnum;
+exports.billingPlanSchema = billingPlanSchema;

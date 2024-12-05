@@ -17,6 +17,7 @@ import { useEffect, useState } from "react";
 import { useTokensStore } from "../store/Tokens.js";
 import { Toast } from "bootstrap";
 import { networks } from "../config/networks.js";
+import { useMemberbeat } from "../context/MemberbeatContext.jsx";
 
 const TokensAdminPage = () => {
   
@@ -31,6 +32,9 @@ const TokensAdminPage = () => {
   const [token, setToken] = useState(emptyTokenObj);
   const [toast, setToast] = useState({ show: false, message: '', type: '' });
   const [showDeleteModal, setShowDeleteModal] = useState(false);    
+  const [showPublishModal, setShowPublishModal] = useState(false);
+  const [isPublishing, setIsPublishing] = useState(false);
+  const { memberbeat } = useMemberbeat();
   
   useEffect(() => {
     if (isOwner !== null) {
@@ -108,6 +112,61 @@ const TokensAdminPage = () => {
     }
   };
 
+  const handlePublish = () => {
+    setShowPublishModal(true);
+  }; 
+
+  const confirmPublish = async () => {
+    if (!memberbeat) {
+        return;
+    }
+
+    setIsPublishing(true);
+    try {
+
+        const registeredTokens = await memberbeat.getRegisteredTokens();
+        console.log("Registered tokens", registeredTokens);
+        const tokenAddresses = new Set(tokens.map(token => token.contractAddress));
+
+        for (const registeredToken of registeredTokens) {
+            if (!tokenAddresses.has(registeredToken)) {
+                await memberbeat.deleteTokenPriceFeed(registeredToken);
+            }
+        }
+        
+        for (const token of tokens) {
+            const isRegistered = await memberbeat.isTokenRegistered(token.contractAddress);
+            if (isRegistered) {
+                await memberbeat.updateTokenPriceFeed(token.contractAddress, token.priceFeedAddress);
+            } else {
+                await memberbeat.addTokenPriceFeed(token.contractAddress, token.priceFeedAddress);
+            }
+        }
+
+        setToast({
+            show: true,
+            message: 'Token data published successfully!',
+            type: 'success'
+        });
+
+        setShowPublishModal(false);
+    } catch (error) {
+        setToast({
+            show: true,
+            message: 'Failed to publish token data. Please try again.',
+            type: 'error'
+        });
+        console.error("Error publishing token data: ", error);
+    } finally {
+        setIsPublishing(false);
+    }
+  };
+
+
+  const handleClosePublishModal = () => {
+    setShowPublishModal(false);
+  };
+
   useEffect(() => {
     if (toast.show) {
       const toastElement = document.getElementById('toast');
@@ -139,7 +198,8 @@ const TokensAdminPage = () => {
       <div className="d-flex justify-content-between py-3">
         <h2>Tokens</h2>
         <div>
-          <button onClick={handleAddToken} className="btn btn-primary">Add token</button>
+          <button onClick={handleAddToken} className="btn btn-primary me-2">Add token</button>
+          <button onClick={handlePublish} className="btn btn-secondary">Publish</button>
         </div>
       </div>
       <table className="table table-dark table-striped">
@@ -246,6 +306,33 @@ const TokensAdminPage = () => {
                 <button type="button" className="btn btn-secondary" onClick={handleCloseDeleteModal}>Cancel</button>
                 <button type="button" className="btn btn-danger" onClick={confirmDeleteToken}>Delete</button>
               </div>           
+            </div>
+          </div>
+        </div>
+      )}
+
+      {showPublishModal && (
+        <div className="modal show d-block" tabIndex="-1" role="dialog">
+          <div className="modal-dialog" role="document">
+            <div className="modal-content bg-dark text-white">
+              <div className="modal-header">
+                <h5 className="modal-title">Confirm Publish</h5>
+                <button type="button" className="btn-close btn-close-white" aria-label="Close" onClick={handleClosePublishModal}></button>
+              </div>
+              <div className="modal-body">
+                <p>Are you sure you want to publish the data to the network?</p>
+                {isPublishing && (
+                  <div className="d-flex justify-content-center">
+                    <div className="spinner-border text-primary" role="status">
+                      <span className="visually-hidden">Loading...</span>
+                    </div>
+                  </div>
+                )}
+              </div>
+              <div className="modal-footer">
+                <button type="button" className="btn btn-secondary" onClick={handleClosePublishModal} disabled={isPublishing}>Cancel</button>
+                <button type="button" className="btn btn-danger" onClick={confirmPublish} disabled={isPublishing}>Publish</button>
+              </div>
             </div>
           </div>
         </div>

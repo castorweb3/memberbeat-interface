@@ -11,10 +11,9 @@
 // You should have received a copy of the GNU General Public License
 // along with this program. If not, see <https://www.gnu.org/licenses/>.
 
-import { BrowserProvider, JsonRpcSigner } from 'ethers';
 import { createMemberbeat } from 'memberbeat-sdk-js';
 import React, { createContext, useContext, useState, useEffect } from 'react';
-import { useAccount, useConfig, useClient } from 'wagmi';
+import { useWalletContext } from './WalletContext';
 
 const MemberbeatContext = createContext();
 
@@ -23,33 +22,25 @@ export const useMemberbeat = () => useContext(MemberbeatContext);
 export const MemberbeatProvider = ({ children, contractAddress }) => {
   const [memberbeat, setMemberbeat] = useState(null);
   const [signer, setSigner] = useState(null);
-
-  const account = useAccount();
-  const config = useConfig();  
-  const client = useClient({ config });   
-
+  const {provider, error} = useWalletContext();
+  
   useEffect(() => {
     const setupSigner = async () => {
-      if (account.isConnected) {
-        const { chain, transport } = client;
-        const network = {
-          chainId: chain.id,
-          name: chain.name,
-          ensAddress: chain.contracts?.ensRegistry?.address,
-        };
-        const provider = new BrowserProvider(transport, network);
-        const newSigner = new JsonRpcSigner(provider, account.address);        
-
-        setSigner(newSigner);
-      }
+      console.log("Setting up signer", provider);
+      if (provider) {
+        await provider.send('eth_requestAccounts', []);
+        const _signer = await provider.getSigner();
+        console.log("_signer", _signer);
+        setSigner(_signer);
+      }        
     };
 
     setupSigner();
-  }, [account, client]);
+  }, [provider]);
 
   useEffect(() => {
     const initializeMemberbeat = async () => {
-      if (account.isConnected && signer) {
+      if (signer) {        
         const memberbeatInstance = await createMemberbeat(contractAddress, signer);
         console.log('Memberbeat created:', memberbeatInstance); 
         setMemberbeat(memberbeatInstance);        
@@ -57,7 +48,7 @@ export const MemberbeatProvider = ({ children, contractAddress }) => {
     };
 
     initializeMemberbeat();
-  }, [account, signer, contractAddress]);
+  }, [signer, contractAddress]);
 
   return (
     <MemberbeatContext.Provider value={{ memberbeat, signer }}>

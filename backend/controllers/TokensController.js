@@ -11,10 +11,10 @@
 // You should have received a copy of the GNU General Public License
 // along with this program. If not, see <https://www.gnu.org/licenses/>.
 
-import mongoose from "mongoose";
-import Token from "../models/Token.model.js";
+const mongoose = require("mongoose");
+const Token = require("../models/Token.model.js");
 
-export const getTokens = async (req, res) => {
+const getTokens = async (req, res) => {
     try {
         const tokens = await Token.find({}); 
         res.status(200).json({ status: true, data: tokens });
@@ -24,7 +24,7 @@ export const getTokens = async (req, res) => {
     }
 }
 
-export const getToken = async (req, res) => {
+const getToken = async (req, res) => {
     const { id } = req.params;
     try {
         const token = await Token.findById(id);
@@ -38,7 +38,7 @@ export const getToken = async (req, res) => {
     }
 }
 
-export const createToken = async (req, res) => {
+const createToken = async (req, res) => {
     const token = req.body;
     if (!token.network || !token.contractAddress || !token.priceFeedAddress || !token.tokenName || !token.symbol || !token.iconUrl) {
         return res.status(400).json({ success: false, message: "Please provide all fields" });
@@ -55,7 +55,7 @@ export const createToken = async (req, res) => {
     }
 }
 
-export const updateToken = async (req, res) => {
+const updateToken = async (req, res) => {
     const {id} = req.params;
 
     const token = req.body;
@@ -76,7 +76,7 @@ export const updateToken = async (req, res) => {
     }
 }
 
-export const deleteToken = async (req, res) => {
+const deleteToken = async (req, res) => {
     const {id} = req.params;
 
     if (!mongoose.Types.ObjectId.isValid(id)) {
@@ -92,5 +92,10 @@ export const deleteToken = async (req, res) => {
     }
 }
 
-
-
+module.exports = {
+    getTokens,
+    getToken,
+    createToken,
+    updateToken,
+    deleteToken,
+}

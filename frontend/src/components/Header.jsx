@@ -11,33 +11,39 @@
 // You should have received a copy of the GNU General Public License
 // along with this program. If not, see <https://www.gnu.org/licenses/>.
 
-import { ConnectButton } from "@rainbow-me/rainbowkit";
 import { Link } from "react-router-dom";
 import useOwnershipCheck from "../hooks/useOwnershipCheck";
+import { useWalletContext } from "../context/WalletContext";
 import { useMemberbeat } from "../context/MemberbeatContext";
 
 const Header = () => {
-  const { signer } = useMemberbeat();
-  const isOwner = useOwnershipCheck();
-  
-  console.log("Signer", signer);
+    const { provider, connectWallet } = useWalletContext();
+    const { signer } = useMemberbeat();
+    const isOwner = useOwnershipCheck();
 
-  return (
-    <header className="d-flex justify-content-end align-items-center py-3">                  
-      {signer && (
-        <>
-          <div className="me-3"><Link to={"/"}>Home</Link></div>
-          <div className="me-3"><Link to={"/profile"}>Profile</Link></div>
-        </>
-      )}      
-      {isOwner && (
-        <>          
-          <div className="me-4"><Link to={"/admin"}>Admin</Link></div>          
-        </>
-      )}      
-      <ConnectButton />   
-    </header>
-  );
+    return (
+        <header className="d-flex justify-content-end align-items-center py-3">
+            {provider && (
+                <>
+                    <div className="me-3"><Link to={"/"}>Home</Link></div>
+                    <div className="me-3"><Link to={"/profile"}>Profile</Link></div>
+                </>
+            )}
+            {isOwner && (
+                <>
+                    <div className="me-4"><Link to={"/admin"}>Admin</Link></div>
+                </>
+            )}
+            {signer && (
+                <div>{signer.address}</div>
+            )}
+            {!provider && (
+                <button onClick={connectWallet}>Connect wallet</button>
+            )}
+        </header>
+    );
 };
 
 export default Header;
+
+

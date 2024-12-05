@@ -15,8 +15,10 @@ import React, { useEffect, useState } from "react";
 import { useNavigate, useParams } from "react-router-dom";
 import { usePlansStore } from "../store/Plans.js";
 import { useTokensStore } from "../store/Tokens.js";
-import { periodEnum, pricingTypeEnum } from "../../../backend/models/BillingPlan.model.js";
 import useOwnershipCheck from "../hooks/useOwnershipCheck.js";
+
+const periodEnum = ['Day', 'Month', 'Year', 'Lifetime'];
+const pricingTypeEnum = ['TokenPrice', 'FiatPrice'];
 
 const BillingPlansAdminPage = () => {  
   const isOwner = useOwnershipCheck();
@@ -240,7 +242,7 @@ const BillingPlansAdminPage = () => {
                   <i className="bi bi-pencil-square"></i>
                 </a>
                 <a href="#" onClick={() => confirmDeleteBillingPlan(billingPlan._id)} className="text-decoration-none text-danger">
-                  <i class="bi bi-trash"></i>
+                  <i className="bi bi-trash"></i>
                 </a>
               </td>
             </tr>

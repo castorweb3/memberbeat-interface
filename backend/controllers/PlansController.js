@@ -11,11 +11,11 @@
 // You should have received a copy of the GNU General Public License
 // along with this program. If not, see <https://www.gnu.org/licenses/>.
 
-import mongoose from "mongoose";
-import Plan from "../models/Plan.model.js";
-import {periodEnum, pricingTypeEnum} from "../models/BillingPlan.model.js";
+const mongoose = require("mongoose");
+const Plan = require("../models/Plan.model.js");
+const {periodEnum, pricingTypeEnum} = require("../models/BillingPlan.model.js");
 
-export const getPlans = async (req, res) => {
+const getPlans = async (req, res) => {
     try {
         const plans = await Plan.find({}).populate(
             { path: 'billingPlans.tokens.token', model: 'Token' }
@@ -27,7 +27,7 @@ export const getPlans = async (req, res) => {
     }
 }
 
-export const getPlan = async (req, res) => {
+const getPlan = async (req, res) => {
     const { id } = req.params;
     try {
         const plan = await Plan.findById(id).populate(
@@ -43,7 +43,7 @@ export const getPlan = async (req, res) => {
     }
 }
 
-export const createPlan = async (req, res) => {
+const createPlan = async (req, res) => {
     const plan = req.body;
     if (!plan.name || !plan.description || !plan.features) {
         return res.status(400).json({ success: false, message: "Please provide all fields" });
@@ -60,7 +60,7 @@ export const createPlan = async (req, res) => {
     }
 }
 
-export const updatePlan = async (req, res) => {
+const updatePlan = async (req, res) => {
     const {id} = req.params;
 
     const plan = req.body;
@@ -83,7 +83,7 @@ export const updatePlan = async (req, res) => {
     }
 }
 
-export const deletePlan = async (req, res) => {
+const deletePlan = async (req, res) => {
     const {id} = req.params;
 
     if (!mongoose.Types.ObjectId.isValid(id)) {
@@ -131,7 +131,7 @@ const validateBillingPlan = (billingPlan) => {
     return { valid: true, message: "" };
 };    
 
-export const addBillingPlan = async (req, res) => {
+const addBillingPlan = async (req, res) => {
     const {id} = req.params;
 
     const billingPlan = req.body;    
@@ -161,7 +161,7 @@ export const addBillingPlan = async (req, res) => {
     }
 }
 
-export const updateBillingPlan = async (req, res) => {
+const updateBillingPlan = async (req, res) => {
     const {id, billingPlanId} = req.params;
 
     const billingPlan = req.body;    
@@ -196,7 +196,7 @@ export const updateBillingPlan = async (req, res) => {
     }
 }
 
-export const removeBillingPlan = async (req, res) => {
+const removeBillingPlan = async (req, res) => {
     const {id, billingPlanId} = req.params;
 
     try {
@@ -216,3 +216,13 @@ export const removeBillingPlan = async (req, res) => {
     }
 }
 
+module.exports = {
+    getPlans,
+    getPlan,
+    createPlan,
+    updatePlan,
+    deletePlan,
+    addBillingPlan,
+    updateBillingPlan,
+    removeBillingPlan,    
+}
